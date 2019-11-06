@@ -1,51 +1,90 @@
 import socket
 import time
 import sys
+import threading
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print("Socket successfully created")
-port = int(sys.argv[1])
-s.bind(('', port))
-print("Socket binded to",port)
-s.listen(5)
-print("Socket listening")
+t = [None,None]
+s = [None,None]
+clientsocket = [None,None]
+tries = [4,4]
+category = "Songs"
+lisindex = [[],[]]
+lisletter = [[],[]]
+letter = [None,None]
+word = "Munish"
+recword = [None,None]
+word = word.lower()
+initial = [None,None]
+final = [None,None]
+timetaken = [None,None]
 
-clientsocket, address = s.accept()
-print(f"Connection from {address} has been established.")
+def runner(s,clientsocket,i):
+    # word = input("Enter the input word for player-{i}",)
+    initial[i] = time.time()
+    clientsocket.send(bytes(str(len(word)),"utf-8"))
+    time.sleep(0.2)
+    clientsocket.send(bytes(category,"utf-8"))
 
-#Hangman starts
-word = input("Enter the word:")
-tries = 4
-category = "songs"
-clientsocket.send(bytes(str(len(word)),"utf-8"))
-time.sleep(1)
-clientsocket.send(bytes(category,"utf-8"))
+    while(tries[i]):
+        letter[i] = clientsocket.recv(1024).decode("utf-8")
+        print("Obtained letter is ",letter[i])
+        if letter[i] in word:
+            lisindex[i].extend([str(k) for k,char in enumerate(word) if char==letter[i]])
+            lisletter[i].extend([char for k,char in enumerate(word) if char==letter[i]])
+            clientsocket.send(bytes("".join(lisindex[i]),"utf-8"))
+            time.sleep(0.2)
+            clientsocket.send(bytes("".join(lisletter[i]),"utf-8"))
+        else:
+            clientsocket.send(bytes("no","utf-8"))
+            time.sleep(0.2)
+            clientsocket.send(bytes("no","utf-8"))
 
-lisindex = []
-lisletter = []
+        recword[i] = clientsocket.recv(1024).decode("utf-8")
+        if(recword[i]==word):
+            clientsocket.send(bytes("yes","utf-8"))
+        else:
+            clientsocket.send(bytes("no","utf-8"))
+        completed = clientsocket.recv(1024).decode("utf-8")
+        if(completed=="completed"):
+            tries[i] = 0
+            final[i] = time.time()
+            timetaken[i] = final[i] - initial[i]
+            clientsocket.send(bytes("You guessed in " + str(timetaken[i]) + " seconds","utf-8"))
+        elif(completed=="notcompleted"):
+            tries[i] = 0
+            final[i] = time.time()
+            timetaken[i] = final[i] - initial[i]
+            clientsocket.send(bytes("You were unable to guess. You took " + str(timetaken[i]) + " seconds","utf-8"))
+        else:
+            clientsocket.send(bytes("Continuing..","utf-8"))
+    time.sleep(1)
+    clientsocket.close()
 
-while(tries):
-    letter = clientsocket.recv(1024).decode("utf-8")
-    print("Obtained letter is ",letter)
-    if letter in word:
-        lisindex.extend([str(k) for k,char in enumerate(word) if char==letter])
-        lisletter.extend([char for k,char in enumerate(word) if char==letter])
-        clientsocket.send(bytes("".join(lisindex),"utf-8"))
-        time.sleep(1)
-        clientsocket.send(bytes("".join(lisletter),"utf-8"))
+
+
+i = 0
+while(True):
+    s[i] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print("Socket successfully created")
+    if(i==0):
+        port = int(sys.argv[1])
     else:
-        clientsocket.send(bytes("no","utf-8"))
-        time.sleep(1)
-        clientsocket.send(bytes("no","utf-8"))
+        port = port + 1
+    s[i].bind(('', port))
+    print("Socket binded to",port)
+    s[i].listen(5)
+    print("Socket listening")
+    clientsocket[i], address = s[i].accept()
+    i = i + 1
+    print(f"Connection from {address} has been established.")
+    if(i==2):
+        break
 
-    recword = clientsocket.recv(1024).decode("utf-8")
-    if(recword==word):
-        clientsocket.send(bytes("yes","utf-8"))
-    else:
-        clientsocket.send(bytes("no","utf-8"))
-    # completed = clientsocket.recv(1024).decode("utf-8")
-    # if(completed=="completed"):
-    #     tries = 0
+for i in range(2):
+    t[i] = threading.Thread(target=runner,args=(s[i],clientsocket[i],i))    
+    t[i].start()
 
-time.sleep(1)
-clientsocket.close()
+for i in range(2):
+    t[i].join()
+
+print("The Winner is ",timetaken.index(min(timetaken))+1)

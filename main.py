@@ -33,6 +33,7 @@ s.connect(("127.0.0.1", port))
 
 def start_conditions():
     # Sets the starting conditions for a new game.
+    print("Waiting")
     length = s.recv(1024).decode("utf-8")
     print(length)
     category = s.recv(1024).decode("utf-8")
@@ -67,13 +68,14 @@ class HangmanBoard(AnchorLayout):
         print(yesno)
         if(yesno == "yes"):
             self.disable_letters()
-            
-            # s.send(bytes("completed","utf-8"))
+            s.send(bytes("completed","utf-8"))
         elif NUM_OF_GUESSES == self.misses:
             self.disable_letters()
-            # s.send(bytes("completed","utf-8"))
-        # else:
-            # s.send(bytes("continue","utf-8"))
+            s.send(bytes("notcompleted","utf-8"))
+        else:
+            s.send(bytes("continue","utf-8"))
+        status = s.recv(1024).decode("utf-8")
+        print(status)
         
 
     def hangman_body(self):

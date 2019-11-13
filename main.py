@@ -10,8 +10,8 @@ from kivy.config import Config
 from kivy.uix.anchorlayout import AnchorLayout
 
 FPS = 1 / 60  # frames per second
-WINDOWWIDTH = 500  # size of window's with in pixels
-WINDOWHEIGHT = 600  # size of window's height in pixels
+WINDOWWIDTH = 800  # size of window's with in pixels
+WINDOWHEIGHT = 900  # size of window's height in pixels
 NUM_OF_GUESSES = 4  # number of guesses before game over
 INNER_MARGIN = 15  # distance of inner border from window edge in pixels
 OUTER_MARGIN = 10  # distance of outer border from window edge in pixels
@@ -35,9 +35,22 @@ def start_conditions():
     # Sets the starting conditions for a new game.
     print("Waiting")
     length = s.recv(1024).decode("utf-8")
+    print("herere")
+    print(length)
+    spaces = length.split(";")[1].split(",")
+    spaces = list(map(int,spaces))
+    print(spaces)
+    length = length.split(";")[0]
     print(length)
     category = s.recv(1024).decode("utf-8")
-    hidden_word = ['_' for i in range(int(length))]
+    hidden_word = []
+    for i in range(int(length)):
+        if(i in spaces):
+            hidden_word.append(" ")
+        else:
+            hidden_word.append("_")
+    print(hidden_word)
+    # hidden_word = ['_' for i in range(int(length))]
     misses = 0
 
     return category, hidden_word, misses
@@ -103,13 +116,13 @@ class HangmanBoard(AnchorLayout):
         letter.background_color = LIGHT_RED
         s.send(bytes(guess,"utf-8"))
         indexes = s.recv(1024).decode("utf-8")
-        print("indexes-",indexes)
         values = s.recv(1024).decode("utf-8")
         print("values-",values)
-
         if(indexes=="no"):
             self.misses += 1
         else:
+            indexes = indexes.split(",")
+            print("indexes-",indexes)
             indexeslis = [int(x) for x in indexes]
             p = 0
             for i in indexeslis:

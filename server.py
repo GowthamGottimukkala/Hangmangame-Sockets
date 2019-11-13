@@ -11,7 +11,7 @@ category = "Songs"
 lisindex = [[],[]]
 lisletter = [[],[]]
 letter = [None,None]
-word = "Munish"
+word = "karthik chowdary paladagu"
 recword = [None,None]
 word = word.lower()
 initial = [None,None]
@@ -21,7 +21,10 @@ timetaken = [None,None]
 def runner(s,clientsocket,i):
     # word = input("Enter the input word for player-{i}",)
     initial[i] = time.time()
-    clientsocket.send(bytes(str(len(word)),"utf-8"))
+    spaces = []
+    spaces = [str(i) for i,x in enumerate(word) if x==" "]
+    first = str(len(word)) + ";" + ",".join(spaces)
+    clientsocket.send(bytes(first,"utf-8"))
     time.sleep(0.2)
     clientsocket.send(bytes(category,"utf-8"))
 
@@ -31,7 +34,7 @@ def runner(s,clientsocket,i):
         if letter[i] in word:
             lisindex[i].extend([str(k) for k,char in enumerate(word) if char==letter[i]])
             lisletter[i].extend([char for k,char in enumerate(word) if char==letter[i]])
-            clientsocket.send(bytes("".join(lisindex[i]),"utf-8"))
+            clientsocket.send(bytes(",".join(lisindex[i]),"utf-8"))
             time.sleep(0.2)
             clientsocket.send(bytes("".join(lisletter[i]),"utf-8"))
         else:
@@ -49,12 +52,12 @@ def runner(s,clientsocket,i):
             tries[i] = 0
             final[i] = time.time()
             timetaken[i] = final[i] - initial[i]
-            clientsocket.send(bytes("You guessed in " + str(timetaken[i]) + " seconds","utf-8"))
+            clientsocket.send(bytes("You guessed in " + str(timetaken[i]) + " units","utf-8"))
         elif(completed=="notcompleted"):
             tries[i] = 0
             final[i] = time.time()
             timetaken[i] = final[i] - initial[i]
-            clientsocket.send(bytes("You were unable to guess. You took " + str(timetaken[i]) + " seconds","utf-8"))
+            clientsocket.send(bytes("You were unable to guess. You took " + str(timetaken[i]) + " units","utf-8"))
         else:
             clientsocket.send(bytes("Continuing..","utf-8"))
     time.sleep(1)

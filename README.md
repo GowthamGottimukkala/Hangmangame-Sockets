@@ -4,14 +4,10 @@ A desktop version of the popular paper and pencil word [game](https://en.wikiped
 It was built using the cross-platform python Graphical User Interface
 (GUI) library [Kivy](https://kivy.org/#home).
 
+Added multiplayer version using sockets.
+
 Requirements:
 - Python
 - Kivy 1.9.1
 
 **Languages, Libraries & Frameworks:** Python, Kivy
-
-**Platform:** Linux, Windows
-
-![](/begin.png)
-![](/mid.png)
-![](/end.png)

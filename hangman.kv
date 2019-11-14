@@ -156,14 +156,16 @@
         # Contains the hidden word to be guessed and updated with correct answers.
         Button:
             id: hidden
-            size_hint_y: 0.2
+            size_hint_y: 0.3
             text_size: self.size
+            pos_hint: {'center_x': 0.5}
+            pos_hint: {'center_y': 0.2}
         Label:
             id: guesses
             text: "Welcome"
             font_size: 40
-            color: 1,0,1,1 
-            size_hint_y: 0.1
+            color: 1.00, 0.84, 0.00, 1.00
+            size_hint_y: 0.2
 
             pos_hint: {'center_x': 0.5}
             pos_hint: {'center_y': 0.5}
@@ -177,7 +179,7 @@
         # Grid of all the letters in the alphabet.
         GridLayout:
             cols: 10
-            size_hint_y: 0.3
+            size_hint_y: 0.4
             pos_hint: {'center_x': 0.5}
             Button:
                 id: letterA

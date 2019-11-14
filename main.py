@@ -92,6 +92,14 @@ class HangmanBoard(AnchorLayout):
         else:
             s.send(bytes("continue","utf-8"))
         status = s.recv(1024).decode("utf-8")
+        if("unable" in status):
+            status2 = s.recv(1024).decode("utf-8")
+            print(status2)
+            self.add_money(status2)
+        elif("guessed" in status):
+            status2 = s.recv(1024).decode("utf-8")
+            print(status2)
+            self.add_money(status2)
         print(status)
         
 

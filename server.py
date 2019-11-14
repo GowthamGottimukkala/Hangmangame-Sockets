@@ -49,7 +49,11 @@ def runner(s,clientsocket,i):
             time.sleep(0.2)
             clientsocket.send(bytes("no","utf-8"))
         time.sleep(0.2)
-        clientsocket.send(bytes("He guessed " + str(len(lisletter[1-i])) + " letters","utf-8"))
+        if(tries[1-i]==0):
+            clientsocket.send(bytes("Opponent failed, You are the only hope","utf-8"))
+        else:
+            clientsocket.send(bytes("Opponent guessed " + str(len(lisletter[1-i])) + " letters","utf-8"))
+        
         recword[i] = clientsocket.recv(1024).decode("utf-8")
         if(recword[i]==word):
             clientsocket.send(bytes("yes","utf-8"))
@@ -62,11 +66,15 @@ def runner(s,clientsocket,i):
             timetaken[i] = final[i] - initial[i]
             print("Player-",i+1," completed")
             clientsocket.send(bytes("You guessed in " + str(timetaken[i]) + " units","utf-8"))
+            time.sleep(0.2)
+            clientsocket.send(bytes("You guessed the answer","utf-8"))
         elif(completed=="notcompleted"):
             tries[i] = 0
             final[i] = time.time()
             timetaken[i] = final[i] - initial[i]
             clientsocket.send(bytes("You were unable to guess. You took " + str(timetaken[i]) + " units","utf-8"))
+            time.sleep(0.2)
+            clientsocket.send(bytes("GAME OVER, Answer: " +word,"utf-8"))
         else:
             clientsocket.send(bytes("Continuing..","utf-8"))
     time.sleep(1)

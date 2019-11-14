@@ -29,17 +29,20 @@ NO_COLOR = (0.00, 0.00, 0.00, 0.00)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = int(sys.argv[1])
 s.connect(("127.0.0.1", port))
+competition = "nh "
 
 
 def start_conditions():
     # Sets the starting conditions for a new game.
     print("Waiting")
     length = s.recv(1024).decode("utf-8")
-    print("herere")
     print(length)
-    spaces = length.split(";")[1].split(",")
-    spaces = list(map(int,spaces))
-    print(spaces)
+    try:
+        spaces = length.split(";")[1].split(",")
+        spaces = list(map(int,spaces))
+        print(spaces)
+    except:
+        pass
     length = length.split(";")[0]
     print(length)
     category = s.recv(1024).decode("utf-8")
@@ -57,13 +60,12 @@ def start_conditions():
 
 
 class HangmanBoard(AnchorLayout):
-    # Class that contains the Hangman game
-
     category, hidden_word, misses = start_conditions()
     def calling(self,letter):
         self.letter_click(letter)
         self.hangman_body()
         self.win_or_lose()
+        self.add_money()
 
     def update(self, dt):
         # renders updates of guesses and hidden word, and checks if the game is
@@ -132,6 +134,9 @@ class HangmanBoard(AnchorLayout):
                 self.hidden_word[i] = values[p]
                 p += 1
                 letter.background_color = LIGHT_GREEN
+
+    def add_money(self):
+        self.ids["guesses"].text = str(competition)
 
     def disable_letters(self):
         for k, v in self.ids.items():

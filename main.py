@@ -118,6 +118,9 @@ class HangmanBoard(AnchorLayout):
         indexes = s.recv(1024).decode("utf-8")
         values = s.recv(1024).decode("utf-8")
         print("values-",values)
+        print()
+        competition = s.recv(1024).decode("utf-8")
+        print(competition)
         if(indexes=="no"):
             self.misses += 1
         else:

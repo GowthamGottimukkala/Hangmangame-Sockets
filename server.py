@@ -41,7 +41,8 @@ def runner(s,clientsocket,i):
             clientsocket.send(bytes("no","utf-8"))
             time.sleep(0.2)
             clientsocket.send(bytes("no","utf-8"))
-
+        time.sleep(0.2)
+        clientsocket.send(bytes("He guessed " + str(len(lisletter[1-i])) + " letters and have " + ,"utf-8"))
         recword[i] = clientsocket.recv(1024).decode("utf-8")
         if(recword[i]==word):
             clientsocket.send(bytes("yes","utf-8"))

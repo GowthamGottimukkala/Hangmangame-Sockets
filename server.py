@@ -86,6 +86,7 @@ def runner(s,clientsocket,i):
             clientsocket.send(bytes("GAME OVER, Answer: " +word,"utf-8"))
         else:
             clientsocket.send(bytes("Continuing..","utf-8"))
+        time.sleep(0.2)
     time.sleep(1)
     clientsocket.close()
 

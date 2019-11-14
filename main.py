@@ -68,7 +68,6 @@ class HangmanBoard(AnchorLayout):
         # self.add_money()
 
     def add_money(self,competition):
-        print("Changed text")
         self.ids["guesses"].text = str(competition)
 
     def update(self, dt):
@@ -102,17 +101,10 @@ class HangmanBoard(AnchorLayout):
             status2 = s.recv(1024).decode("utf-8")
             print(status2)
             self.add_money(status2)
-            # final = s.recv(1024).decode("utf-8")
-            # if("GAME" in status2):
-            #     pass
-            # else:
-            #     self.add_money(final)
         elif("guessed" in status):
             status2 = s.recv(1024).decode("utf-8")
             print(status2)
             self.add_money(status2)
-            # final = s.recv(1024).decode("utf-8")
-            # self.add_money(final)
         
 
     def hangman_body(self):
@@ -166,6 +158,7 @@ class HangmanBoard(AnchorLayout):
             if k[0:6] == 'letter' and v.disabled is False:
                 v.disabled = True
                 v.disabled_color = GOLD
+                v.background_color = FADED_WHITE
 
     # def enable_letters(self):
     #     # enables letter buttons

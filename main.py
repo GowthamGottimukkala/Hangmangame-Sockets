@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import time
 from random import randint
 import socket
 import sys
@@ -67,6 +68,7 @@ class HangmanBoard(AnchorLayout):
         # self.add_money()
 
     def add_money(self,competition):
+        print("Changed text")
         self.ids["guesses"].text = str(competition)
 
     def update(self, dt):
@@ -85,6 +87,8 @@ class HangmanBoard(AnchorLayout):
         print(yesno)
         if(yesno == "yes"):
             self.disable_letters()
+            time.sleep(0.2)
+            print("sent completed to server")
             s.send(bytes("completed","utf-8"))
         elif NUM_OF_GUESSES == self.misses:
             self.disable_letters()
@@ -92,15 +96,23 @@ class HangmanBoard(AnchorLayout):
         else:
             s.send(bytes("continue","utf-8"))
         status = s.recv(1024).decode("utf-8")
+        print(status)
+        status2 = ""
         if("unable" in status):
             status2 = s.recv(1024).decode("utf-8")
             print(status2)
             self.add_money(status2)
+            # final = s.recv(1024).decode("utf-8")
+            # if("GAME" in status2):
+            #     pass
+            # else:
+            #     self.add_money(final)
         elif("guessed" in status):
             status2 = s.recv(1024).decode("utf-8")
             print(status2)
             self.add_money(status2)
-        print(status)
+            # final = s.recv(1024).decode("utf-8")
+            # self.add_money(final)
         
 
     def hangman_body(self):
@@ -149,6 +161,7 @@ class HangmanBoard(AnchorLayout):
     
 
     def disable_letters(self):
+        print("Entered")
         for k, v in self.ids.items():
             if k[0:6] == 'letter' and v.disabled is False:
                 v.disabled = True

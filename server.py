@@ -2,24 +2,31 @@ import socket
 import time
 import sys
 import threading
+from random import randint
+import os
 
 t = [None,None]
 s = [None,None]
 clientsocket = [None,None]
 tries = [4,4]
-category = "Songs"
 lisindex = [[],[]]
 lisletter = [[],[]]
 letter = [None,None]
-word = "karthik chowdary paladagu"
 recword = [None,None]
-word = word.lower()
 initial = [None,None]
 final = [None,None]
 timetaken = [None,None]
 
+files = list(filter(lambda x: x.endswith('.txt'), os.listdir()))
+file_in = files[randint(0, len(files) - 1)]
+with open(file_in, 'r') as f:
+    words = f. readlines()
+words = [i.strip() for i in words]
+category = words[0].upper()
+word = words[randint(1, len(words) - 1)]
+word = word.lower()
+
 def runner(s,clientsocket,i):
-    # word = input("Enter the input word for player-{i}",)
     initial[i] = time.time()
     spaces = []
     spaces = [str(i) for i,x in enumerate(word) if x==" "]
@@ -42,7 +49,7 @@ def runner(s,clientsocket,i):
             time.sleep(0.2)
             clientsocket.send(bytes("no","utf-8"))
         time.sleep(0.2)
-        clientsocket.send(bytes("He guessed " + str(len(lisletter[1-i])) + " letters and have " + ,"utf-8"))
+        clientsocket.send(bytes("He guessed " + str(len(lisletter[1-i])) + " letters","utf-8"))
         recword[i] = clientsocket.recv(1024).decode("utf-8")
         if(recword[i]==word):
             clientsocket.send(bytes("yes","utf-8"))
@@ -53,6 +60,7 @@ def runner(s,clientsocket,i):
             tries[i] = 0
             final[i] = time.time()
             timetaken[i] = final[i] - initial[i]
+            print("Player-",i+1," completed")
             clientsocket.send(bytes("You guessed in " + str(timetaken[i]) + " units","utf-8"))
         elif(completed=="notcompleted"):
             tries[i] = 0

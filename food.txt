@@ -1,11 +1,9 @@
 Food
 Cheese Burger
-Spaghetti and Meatballs
-New York Strip Steak
-Chili
-PB & J Sandwich
-Al Pastor Burrito
-Caesar Salad
+Spaghetti
+Steak
+Sandwich
+Salad
 Lasagna
 Fried Chicken
 Frosted Flakes

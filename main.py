@@ -29,7 +29,6 @@ NO_COLOR = (0.00, 0.00, 0.00, 0.00)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = int(sys.argv[1])
 s.connect(("127.0.0.1", port))
-competition = "nh "
 
 
 def start_conditions():
@@ -65,7 +64,10 @@ class HangmanBoard(AnchorLayout):
         self.letter_click(letter)
         self.hangman_body()
         self.win_or_lose()
-        self.add_money()
+        # self.add_money()
+
+    def add_money(self,competition):
+        self.ids["guesses"].text = str(competition)
 
     def update(self, dt):
         # renders updates of guesses and hidden word, and checks if the game is
@@ -123,6 +125,7 @@ class HangmanBoard(AnchorLayout):
         print()
         competition = s.recv(1024).decode("utf-8")
         print(competition)
+        self.add_money(competition)
         if(indexes=="no"):
             self.misses += 1
         else:
@@ -135,14 +138,13 @@ class HangmanBoard(AnchorLayout):
                 p += 1
                 letter.background_color = LIGHT_GREEN
 
-    def add_money(self):
-        self.ids["guesses"].text = str(competition)
+    
 
     def disable_letters(self):
         for k, v in self.ids.items():
             if k[0:6] == 'letter' and v.disabled is False:
                 v.disabled = True
-                v.disabled_color = FADED_WHITE
+                v.disabled_color = GOLD
 
     # def enable_letters(self):
     #     # enables letter buttons

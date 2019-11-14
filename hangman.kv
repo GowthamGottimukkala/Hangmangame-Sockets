@@ -160,17 +160,19 @@
             text_size: self.size
         Label:
             id: guesses
-            text: "Why does this not work?"
-            color: 1,0,1,1 # <-----------
-            size_hint_y: 0.5
+            text: "Welcome"
+            font_size: 40
+            color: 1,0,1,1 
+            size_hint_y: 0.1
+
             pos_hint: {'center_x': 0.5}
             pos_hint: {'center_y': 0.5}
-            # canvas.before:
-            #     Color:
-            #         rgba: 0, 0, 0, 1
-            #     Rectangle:
-            #         pos: self.pos
-            #         size: self.size
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
         # Grid of all the letters in the alphabet.
         GridLayout:
